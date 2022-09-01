@@ -1,5 +1,5 @@
 <template>
-  <el-row class="login-container">
+  <el-row class="login-container" @keydown.enter="onSubmit">
       <el-col :lg="16" :md="12" class="left">
           <div>
               <div>欢迎光临</div>
@@ -29,7 +29,10 @@
                   </el-input>
               </el-form-item>
               <el-form-item>
-                  <el-button round color="#626aef" class="w-[250px]" type="primary" @click="onSubmit">登 录</el-button>
+                  <el-button round color="#626aef" 
+                  class="w-[250px]" type="primary"
+                   @click="onSubmit"
+                   :loading="loading">登 录</el-button>
               </el-form-item>
           </el-form>
       </el-col>
@@ -38,9 +41,12 @@
 
 <script setup>
 import { ref,reactive } from 'vue'
-import { ElNotification } from 'element-plus'
+import { toast } from '~/composables/util.js'
 import { useRouter } from 'vue-router'
-import { login } from '~/api/manager'
+import { login ,getinfo} from '~/api/manager'
+import {
+    setToken
+} from '~/composables/auth.js'
 
 const router = useRouter()
 
@@ -68,34 +74,31 @@ const rules = {
 }
 
 const formRef = ref(null)
+const loading = ref(false)
 
 const onSubmit = () => {
   formRef.value.validate((valid)=>{
       if(!valid){
           return false
       }
+      loading.value = true;
       login(form.username,form.password)
       .then(res=>{
-
           // 提示成功
-          ElNotification({
-              message: "登录成功",
-              type: 'success',
-              duration:3000
-          })
+            toast('登录成功')
 
           // 存储token和用户相关信息，下节课讲
-
+         setToken(res.token)
+          
+          getinfo().then(res2=>{
+            console.log(res2);
+          })
           // 跳转到后台首页
           router.push("/")
-      })
-      .catch(err=>{
-          ElNotification({
-              message: err.response.data.msg || "请求失败",
-              type: 'error',
-              duration:3000
-          })
-      })
+      }).finally(()=>{
+    loading.value = false
+  })
+      
   })
 }
 </script>
