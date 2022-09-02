@@ -43,12 +43,10 @@
 import { ref,reactive } from 'vue'
 import { toast } from '~/composables/util.js'
 import { useRouter } from 'vue-router'
-import { login ,getinfo} from '~/api/manager'
-import {
-    setToken
-} from '~/composables/auth.js'
+import { useStore } from 'vuex'
 
 const router = useRouter()
+const store = useStore()
 
 // do not use same name with ref
 const form = reactive({
@@ -82,25 +80,17 @@ const onSubmit = () => {
           return false
       }
       loading.value = true;
-      login(form.username,form.password)
-      .then(res=>{
-          // 提示成功
-            toast('登录成功')
-
-          // 存储token和用户相关信息，下节课讲
-         setToken(res.token)
-          
-          getinfo().then(res2=>{
-            console.log(res2);
-          })
-          // 跳转到后台首页
-          router.push("/")
+      store.dispatch('login',form).then(res=>{
+        toast('登录成功 ')
+        router.push("/")
       }).finally(()=>{
-    loading.value = false
-  })
+        loading.value = false
+      })
+  
       
   })
 }
+
 </script>
 
 <style scoped>
