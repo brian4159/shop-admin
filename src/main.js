@@ -11,6 +11,7 @@ import 'virtual:windi.css'
 
 const app = createApp(App)
 import "./permission"
+import "nprogress/nprogress.css"
 
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)

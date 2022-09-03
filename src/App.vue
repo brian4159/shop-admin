@@ -9,10 +9,9 @@
   
 </template>
 
-<style scoped>
-  .btn{
-    @apply  bg-light-50 text-indigo-700
-     px-4 hover:(bg-purple-900) transition-all  focus:(ring-2)
-    }
-  
+<style >
+  #nprogress .bar{
+    background-color: #fed2e2 !important;
+    height: 3px !important;
+  }
 </style>
