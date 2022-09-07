@@ -35,7 +35,10 @@
       </el-dropdown>
     </div>
   </div>
-  <el-drawer v-model="showDrawer" title="修改密码"
+  <form-drawer ref="formDrawerRef">
+    <div class="ss" style="height:1000px;"></div>
+  </form-drawer>
+  <!-- <el-drawer v-model="showDrawer" title="修改密码"
   size="45%" 
   close-on-click-modal="false">
   <el-form ref="formRef" :rules="rules" :model="form" >
@@ -59,10 +62,11 @@
                    >提交</el-button>
               </el-form-item>
           </el-form>
-  </el-drawer>
+  </el-drawer> -->
 </template>
 
 <script setup>
+import FormDrawer from "~/components/FormDrawer.vue";
 import { showModal, toast } from "~/composables/util.js";
 import { logout } from "~/api/manager.js";
 import { useRouter } from "vue-router";
@@ -100,7 +104,7 @@ const rules = {
         },
     ]
 }
-
+const formDrawerRef=ref(null)
 const  showDrawer = ref(false)
 const formRef = ref(null)
 const loading = ref(false)
@@ -114,7 +118,8 @@ const { isFullscreen,toggle } = useFullscreen();
 const handleCommand = (c) => {
   switch (c) {
     case "rePassword":
-      showDrawer.value=true;
+      // showDrawer.value=true;
+      formDrawerRef.value.open()
       break;
 
     case "logout":
