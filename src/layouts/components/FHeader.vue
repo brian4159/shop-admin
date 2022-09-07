@@ -35,6 +35,31 @@
       </el-dropdown>
     </div>
   </div>
+  <el-drawer v-model="showDrawer" title="修改密码"
+  size="45%" 
+  close-on-click-modal="false">
+  <el-form ref="formRef" :rules="rules" :model="form" >
+    <el-form-item prop="oldpassword" label="旧密码" label-width="80px">
+                  <el-input type="password" v-model="form.oldpassword" placeholder="请输入密码" show-password>
+                  </el-input>
+              </el-form-item>
+              <el-form-item prop="password" label="新密码" label-width="80px">
+                  <el-input type="password" v-model="form.password" placeholder="请输入密码" show-password>
+                  </el-input>
+              </el-form-item>
+              <el-form-item prop="repassword" label="确认密码" label-width="80px">
+                  <el-input type="password" v-model="form.repassword" placeholder="请再次输入密码" show-password>
+                  </el-input>
+              </el-form-item>
+              <el-form-item>
+                  <el-button  color="#626aef" 
+                  type="primary"
+                   @click="onSubmit"
+                   :loading = "loading"
+                   >提交</el-button>
+              </el-form-item>
+          </el-form>
+  </el-drawer>
 </template>
 
 <script setup>
@@ -43,15 +68,53 @@ import { logout } from "~/api/manager.js";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { useFullscreen } from "@vueuse/core";
+import { ref,reactive } from 'vue'
+import { updatepassword } from "../../api/manager";
+
+const form = reactive({
+oldpassword:"",
+password:"",
+repassword:""
+})
+
+const rules = {
+    oldpassword: [
+        {
+            required: true,
+            message: '旧密码不能为空',
+            trigger: 'blur'
+        },
+    ],
+    password: [
+        {
+            required: true,
+            message: '新密码不能为空',
+            trigger: 'blur'
+        },
+    ],
+    repassword: [
+        {
+            required: true,
+            message: '确认密码不能为空',
+            trigger: 'blur'
+        },
+    ]
+}
+
+const  showDrawer = ref(false)
+const formRef = ref(null)
+const loading = ref(false)
+const router = useRouter();
+const store = useStore();
 
 const { isFullscreen,toggle } = useFullscreen();
 
-const router = useRouter();
-const store = useStore();
+
 
 const handleCommand = (c) => {
   switch (c) {
     case "rePassword":
+      showDrawer.value=true;
       break;
 
     case "logout":
@@ -78,6 +141,23 @@ function handleLogout() {
       toast("退出登录成功");
     });
   });
+}
+const onSubmit = () => {
+  formRef.value.validate((valid)=>{
+      if(!valid){
+          return false
+      }
+      loading.value = true;
+      updatepassword(form).then(res=>{
+        toast('修改密码成功，请重新登录 ')
+        store.dispatch("logout")
+        router.push("/login")
+      }).finally(()=>{
+        loading.value = false
+      })
+  
+      
+  })
 }
 </script>
 

@@ -83,8 +83,8 @@ const onSubmit = () => {
       store.dispatch('login',form).then(res=>{
         toast('登录成功 ')
         router.push("/")
-      }).finally(()=>{
-        loading.value = false
+      }).finallay(()=>{
+        loading.vlue = false
       })
   
       

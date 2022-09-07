@@ -1,7 +1,7 @@
 import axios from 'axios'
-import { ElNotification } from 'element-plus'
 import { getToken } from '~/composables/auth.js'
 import { toast } from '~/composables/util.js'
+import store from "./store"
 
 const service = axios.create({
     baseURL: '/api',
@@ -24,15 +24,21 @@ service.interceptors.request.use(function (config) {
 
 // 添加响应拦截器
 service.interceptors.response.use(function (response) {
-  // 2xx 范围内的状态码都会触发该函数。
   // 对响应数据做点什么
   return response.data.data;
 }, function (error) {
-  // 超出 2xx 范围的状态码都会触发该函数。
-  // 对响应错误做点什么
-  toast(error.response.data.msg || "请求失败",'error')
+  const msg = error.response.data.msg || "请求失败"
+  
+  if(msg == "非法token，请先登录！"){
+    store.dispatch("logout").then(()=>{
+      toast(msg,"error")
+    }).finally(()=>location.reload())
+    
+  }
 
-  return Promise.reject(error.response.data.msg);
-});
+  toast(msg,"error")
+
+  return Promise.reject(error);
+})
 
   export default service
