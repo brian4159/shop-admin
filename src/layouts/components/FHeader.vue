@@ -57,57 +57,19 @@
 
 <script setup>
 import FormDrawer from "~/components/FormDrawer.vue";
-import { showModal, toast } from "~/composables/util.js";
-import { logout } from "~/api/manager.js";
-import { useRouter } from "vue-router";
-import { useStore } from "vuex";
 import { useFullscreen } from "@vueuse/core";
-import { ref,reactive } from 'vue'
-import { updatepassword } from "../../api/manager";
+import {useRepassword ,useLogout} from "~/composables/userManager.js"
 
-const form = reactive({
-oldpassword:"",
-password:"",
-repassword:""
-})
-
-const rules = {
-    oldpassword: [
-        {
-            required: true,
-            message: '旧密码不能为空',
-            trigger: 'blur'
-        },
-    ],
-    password: [
-        {
-            required: true,
-            message: '新密码不能为空',
-            trigger: 'blur'
-        },
-    ],
-    repassword: [
-        {
-            required: true,
-            message: '确认密码不能为空',
-            trigger: 'blur'
-        },
-    ]
-}
-const formDrawerRef=ref(null)
-const formRef = ref(null)
-const router = useRouter();
-const store = useStore();
 
 const { isFullscreen,toggle } = useFullscreen();
-
-
+const {form,formRef,formDrawerRef,rules,onSubmit,openRepasswordForm } = useRepassword();
+const { handleLogout} = useLogout();
 
 const handleCommand = (c) => {
   switch (c) {
     case "rePassword":
-      // showDrawer.value=true;
-      formDrawerRef.value.open()
+    openRepasswordForm()
+     
       break;
 
     case "logout":
@@ -121,37 +83,7 @@ const handleCommand = (c) => {
 //刷新
 const handleRefresh = () => location.reload();
 
-function handleLogout() {
-  showModal("是否退出登录？").then((res) => {
-    logout().finally(() => {
-      //移除cookie里的token
 
-      //清除当前用户状态vuex
-      store.dispatch("logout");
-      //跳转登录页面
-
-      router.push("/login");
-      toast("退出登录成功");
-    });
-  });
-}
-const onSubmit = () => {
-  formRef.value.validate((valid)=>{
-      if(!valid){
-          return false
-      }
-      formDrawerRef.value.showLoading()
-      updatepassword(form).then(res=>{
-        toast('修改密码成功，请重新登录 ')
-        store.dispatch("logout")
-        router.push("/login")
-      }).finally(()=>{
-        formDrawerRef.value.hideLoading()
-      })
-  
-      
-  })
-}
 </script>
 
 <style>

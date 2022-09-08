@@ -7,12 +7,12 @@
       close-on-click-modal="false"
       :destroy-on-close="destroyOnclose"
     >
-    <div class="formDrawer">
-        <div class="body">
+    <div class="formDrawer" @keydown.enter="submit">
+        <div class="body" >
             <slot></slot>
         </div>
         <div class="actions">
-            <el-button type="primary" @click="submit" :loading="loading">{{confirmText}}</el-button>
+            <el-button type="primary" @click="submit"  :loading="loading">{{confirmText}}</el-button>
             <el-button @click="close">取消</el-button>
         </div>
     </div>
@@ -28,7 +28,7 @@ import {ref} from 'vue'
 
  const props = defineProps({
     title:String,
-    size:{type:String,default:'45%  '},
+    size:{type:String,default:'45% '},
     destroyOnClose:{type:Boolean,default:false},
     confirmText:{type:String,default:''}
  })
