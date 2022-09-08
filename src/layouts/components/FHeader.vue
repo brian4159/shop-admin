@@ -35,13 +35,8 @@
       </el-dropdown>
     </div>
   </div>
-  <form-drawer ref="formDrawerRef">
-    <div class="ss" style="height:1000px;"></div>
-  </form-drawer>
-  <!-- <el-drawer v-model="showDrawer" title="修改密码"
-  size="45%" 
-  close-on-click-modal="false">
-  <el-form ref="formRef" :rules="rules" :model="form" >
+  <form-drawer ref="formDrawerRef" title="修改密码"  confirmText="提交" destroyOnClose @submit="onSubmit">
+    <el-form ref="formRef" :rules="rules" :model="form" >
     <el-form-item prop="oldpassword" label="旧密码" label-width="80px">
                   <el-input type="password" v-model="form.oldpassword" placeholder="请输入密码" show-password>
                   </el-input>
@@ -54,15 +49,10 @@
                   <el-input type="password" v-model="form.repassword" placeholder="请再次输入密码" show-password>
                   </el-input>
               </el-form-item>
-              <el-form-item>
-                  <el-button  color="#626aef" 
-                  type="primary"
-                   @click="onSubmit"
-                   :loading = "loading"
-                   >提交</el-button>
-              </el-form-item>
+        
           </el-form>
-  </el-drawer> -->
+  </form-drawer>
+ 
 </template>
 
 <script setup>
@@ -105,9 +95,7 @@ const rules = {
     ]
 }
 const formDrawerRef=ref(null)
-const  showDrawer = ref(false)
 const formRef = ref(null)
-const loading = ref(false)
 const router = useRouter();
 const store = useStore();
 
@@ -152,13 +140,13 @@ const onSubmit = () => {
       if(!valid){
           return false
       }
-      loading.value = true;
+      formDrawerRef.value.showLoading()
       updatepassword(form).then(res=>{
         toast('修改密码成功，请重新登录 ')
         store.dispatch("logout")
         router.push("/login")
       }).finally(()=>{
-        loading.value = false
+        formDrawerRef.value.hideLoading()
       })
   
       
