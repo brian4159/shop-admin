@@ -4,9 +4,9 @@
       <el-icon class="mr-1"><Football /></el-icon>
       小王同学
     </span>
-    <el-tooltip effect="dark" content="扩展" placement="bottom-start">
-      <el-icon class="icon-btn"><Fold /></el-icon>
-    </el-tooltip>
+    <el-icon  class="icon-btn" @click="$store.commit('handleAsideWidth')">
+      <Fold v-if="$store.state.asideWidth =='250px'" />
+    <Expand v-else /></el-icon>
     <el-tooltip effect="dark" content="刷新" placement="bottom-start">
       <el-icon class="icon-btn" @click="handleRefresh"><Refresh /></el-icon>
     </el-tooltip>

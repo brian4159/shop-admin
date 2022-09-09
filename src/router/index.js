@@ -2,10 +2,12 @@ import
 { createRouter ,
 createWebHashHistory
  } from "vue-router";
-import Admin from "~/layouts/admin.vue"
+ import Admin from "~/layouts/admin.vue"
  import Index from '~/pages/index.vue'
  import NotFound from '~/pages/404.vue'
  import Login  from '~/pages/login.vue'
+ import  List  from "~/pages/goods/list.vue";
+
  const routes = [
    {
     path:"/",  
@@ -16,8 +18,11 @@ import Admin from "~/layouts/admin.vue"
       meta:{
          title:"后台首页"
     }
-
-    }]
+    },
+    {
+      path:'/goods/list',
+      component:List,
+     },]
  } ,{
   path:'/login',
   component:Login,
@@ -25,6 +30,7 @@ import Admin from "~/layouts/admin.vue"
    title:"登录页"
 }
  },
+ 
   { path: '/:pathMatch(.*)*', 
   name: 'NotFound', 
   component: NotFound },
