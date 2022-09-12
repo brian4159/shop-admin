@@ -1,4 +1,4 @@
-import router from "~/router"
+import {router ,addRoutes} from "~/router"
 import {getToken} from '~/composables/auth.js'
 import {toast,showFullLoading,hiddenFullLoading} from '~/composables/util.js'
 import store from "./store"
@@ -19,12 +19,14 @@ router.beforeEach(async(to, from,next) => {
         toast('已登录',"error")
         return next({path:from.path?from.path:'/'})
      }
+     let hasNewRoutes = false
      if(token){
-        await store.dispatch('getinfo')
+        let {menus } =    await store.dispatch('getinfo');
+           hasNewRoutes =  addRoutes(menus)
      }
 
      document.title = "小王同学学习空间"+" "+(to.meta.title? to.meta.title : '')
-     next()
+      hasNewRoutes ?  next(to.fullPath) :next()
 
   })
 
